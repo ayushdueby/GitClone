@@ -1,5 +1,9 @@
 package com.GitClone.Git.refs;
 
+import com.GitClone.Git.model.Commit;
+import com.GitClone.Git.model.GitObject;
+import com.GitClone.Git.model.Tree;
+import com.GitClone.Git.store.ObjectStore;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -11,18 +15,36 @@ import java.util.Map;
 public class RefManager {
     private String headBranch;
     private Map<String,String>latestCommitByBranch; // branch->latest Committed sha
+    private ObjectStore objectStore;
+    private boolean isDetached = false;
+    private String detachedHeadSha = null;
+
     public RefManager()
     {
         this.latestCommitByBranch=new HashMap<>();
     }
-    public String checkout(String checkOutBranch)
+    public String checkoutBranch(String checkOutBranch)
     {
         if(!latestCommitByBranch.containsKey(checkOutBranch))
         {
             throw new RuntimeException("Branch does not exists");
         }
         headBranch=checkOutBranch;
+        isDetached = false;
+        detachedHeadSha = null;
+        //Restore the working directory -> meaning rebuild the index from that commit's tree
+        //ye kya hai? (checkout by branch)
+        //index?
+        //tree restoration
+
         return headBranch;
+    }
+    public String checkoutCommit(String checkOutCommit)
+    {
+        isDetached = true;
+        detachedHeadSha = checkOutCommit;
+        //checkout commit ke andar sirf attach it to the sha
+        return detachedHeadSha;
     }
     public void createBranch(String branchToAdd,String sha)
     {
@@ -34,11 +56,13 @@ public class RefManager {
     }
     public String getHeadSha()
     {
+        if(isDetached)return detachedHeadSha;
         return latestCommitByBranch.get(headBranch);
     }
     //uska latest sha return hoga and we will update that into our key branch's value
     public void updateCurrentBranchAfterCommit(String newSha)
     {
+        if(isDetached)return;
         latestCommitByBranch.put(headBranch,newSha);
     }
     //curr branch delete nai kar sakte

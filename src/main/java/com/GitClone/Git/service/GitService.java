@@ -2,6 +2,8 @@ package com.GitClone.Git.service;
 
 import com.GitClone.Git.model.Blob;
 import com.GitClone.Git.model.Commit;
+import com.GitClone.Git.model.GitObject;
+import com.GitClone.Git.model.Tree;
 import com.GitClone.Git.refs.RefManager;
 import com.GitClone.Git.store.ObjectStore;
 import org.springframework.stereotype.Component;
@@ -20,7 +22,7 @@ public class GitService {
     private RefManager refManager;
     private Map<String,String>indexStaging; //file_path->sha
     private ObjectStore objectStore;
-    private GitService(RefManager refManager,ObjectStore objectStore)
+    public GitService(RefManager refManager,ObjectStore objectStore)
     {
         this.objectStore=objectStore;
         this.indexStaging=new HashMap<>();
@@ -44,14 +46,52 @@ public class GitService {
         String headSha=refManager.getHeadSha();
         while(headSha!=null)
         {
-            Commit commit= (Commit) objectStore.get(headSha);
+            Commit commit= (Commit) objectStore.getGitObject(headSha);
             commitHistory.add(headSha);
             headSha = commit.getParentCommitSha();
         }
         return commitHistory;
     }
-    public void gitCheckout(String branchName)
-    {
+    public void gitCheckout(String input) {
 
+        String sha;
+
+        if (refManager.getLatestCommitByBranch().containsKey(input)) {
+
+            // branch checkout
+            refManager.checkoutBranch(input);
+            sha = refManager.getHeadSha();
+
+        } else {
+            GitObject obj = objectStore.getGitObject(input);
+
+            if (obj == null || !(obj instanceof Commit)) {
+                throw new RuntimeException("Invalid branch or commit SHA");
+            }
+
+            refManager.checkoutCommit(input);
+            sha = input;
+        }
+
+        if (sha == null) {
+            indexStaging.clear();
+            return;
+        }
+
+        Commit commit = (Commit) objectStore.getGitObject(sha);
+
+        if (commit.getTreeSha() == null) {
+            indexStaging.clear();
+            return;
+        }
+
+        Tree tree = (Tree) objectStore.getGitObject(commit.getTreeSha());
+
+        if (tree == null) {
+            throw new RuntimeException("Tree not found");
+        }
+
+        indexStaging.clear();
+        indexStaging.putAll(tree.getEntries());
     }
 }

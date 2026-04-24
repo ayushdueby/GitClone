@@ -42,7 +42,7 @@ public class ObjectStore {
         ShaToGitObject.putIfAbsent(sha,gitObject);
         return sha;
     }
-    public GitObject get(String sha) {
-        return ShaToGitObject.get(sha);
+    public GitObject getGitObject(String sha) {
+        return ShaToGitObject.getOrDefault(sha,null);
     }
 }
