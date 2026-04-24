@@ -3,7 +3,7 @@ package com.GitClone.Git.model;
 public class Blob extends GitObject{
 
     public byte[] content;
-    Blob(byte[] content)
+    public Blob(byte[] content)
     {
         this.setType("blob");
         this.content=content;

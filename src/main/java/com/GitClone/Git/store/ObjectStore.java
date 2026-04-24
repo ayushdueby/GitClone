@@ -7,15 +7,16 @@ import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
 public class ObjectStore {
 
-    private Map<String,GitObject>gitObjectToShaStore;
-    ObjectStore()
+    private Map<String,GitObject>ShaToGitObject;
+    public ObjectStore()
     {
-        gitObjectToShaStore.clear();
+        this.ShaToGitObject=new HashMap<>();
     }
     public String computeSha(byte[] content) throws DigestException, NoSuchAlgorithmException {
         try {
@@ -38,10 +39,10 @@ public class ObjectStore {
         byte[] gitObjectdata=gitObject.serialize();
         String sha=computeSha(gitObjectdata);
         gitObject.setSha(sha);
-        gitObjectToShaStore.putIfAbsent(sha,gitObject);
+        ShaToGitObject.putIfAbsent(sha,gitObject);
         return sha;
     }
     public GitObject get(String sha) {
-        return gitObjectToShaStore.get(sha);
+        return ShaToGitObject.get(sha);
     }
 }

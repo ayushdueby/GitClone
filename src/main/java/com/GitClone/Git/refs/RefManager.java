@@ -7,8 +7,8 @@ import java.util.Map;
 
 @Data
 public class RefManager {
-    public String headBranch;
-    public Map<String,String>latestCommitByBranch;
+    private String headBranch;
+    private Map<String,String>latestCommitByBranch;
 
     public RefManager()
     {
