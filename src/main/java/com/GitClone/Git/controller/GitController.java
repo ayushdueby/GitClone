@@ -23,10 +23,25 @@ public class GitController {
     public void gitAdd(@RequestParam String path, @RequestBody String body) throws DigestException, NoSuchAlgorithmException {
         gitService.gitAdd(path,body);
     }
+    @PostMapping("/branch")
+    public void gitCreateBranch(@RequestParam String name)
+    {
+        gitService.gitCreateBranch(name);
+    }
+    @PostMapping("/checkout")
+    public void gitCheckoutBranch(@RequestParam String target)
+    {
+        gitService.gitCheckout(target);
+    }
     @GetMapping("/log")
     public List<String> gitLog()
     {
         return gitService.gitLog();
+    }
+    @GetMapping("/branch")
+    public List<String>gitListBranch()
+    {
+        return gitService.gitListBranch();
     }
 
 }

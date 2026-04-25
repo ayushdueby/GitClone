@@ -94,4 +94,12 @@ public class GitService {
         indexStaging.clear();
         indexStaging.putAll(tree.getEntries());
     }
+    public void gitCreateBranch(String branchName)
+    {
+        refManager.createBranch(branchName,null);
+    }
+    public List<String>gitListBranch()
+    {
+        return refManager.listBranches();
+    }
 }
