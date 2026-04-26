@@ -98,8 +98,8 @@ public class DiffEngine {
      * Backtrack to build diff result -> to get the stackTrace for delete,insert and unchanged ones
      */
     public List<DiffLine> reconstructDiff(List<Map<Integer, Integer>> trace,
-                                           String[] original,
-                                           String[] modified) {
+                                          String[] original,
+                                          String[] modified) {
 
         List<DiffLine> result = new ArrayList<>();
 
@@ -111,31 +111,34 @@ public class DiffEngine {
             Map<Integer, Integer> currentV = trace.get(step);
             int diagonal = x - y;
 
+            int d = step - 1; // FIX
+
             int previousDiagonal;
 
-            // Decide previous move
-            if (diagonal == -step ||
-                    (diagonal != step &&
+            if (diagonal == -d ||
+                    (diagonal != d &&
                             currentV.getOrDefault(diagonal - 1, 0)
                                     < currentV.getOrDefault(diagonal + 1, 0))) {
 
-                previousDiagonal = diagonal + 1; // came from DOWN
+                previousDiagonal = diagonal + 1; // DOWN (insert)
 
             } else {
-                previousDiagonal = diagonal - 1; // came from RIGHT
+                previousDiagonal = diagonal - 1; // RIGHT (delete)
             }
 
-            int previousX = trace.get(step - 1).get(previousDiagonal);
+            Map<Integer, Integer> prevMap = trace.get(step - 1);
+
+            int previousX = prevMap.getOrDefault(previousDiagonal, 0); // FIX
             int previousY = previousX - previousDiagonal;
 
-            // Traverse diagonal (UNCHANGED lines)
+            // Traverse diagonal (UNCHANGED)
             while (x > previousX && y > previousY) {
                 result.add(new DiffLine(original[x - 1], DiffType.UNCHANGED));
                 x--;
                 y--;
             }
 
-            // Handle ADD or DELETE
+            // Handle ADD / DELETE
             if (x == previousX) {
                 result.add(new DiffLine(modified[y - 1], DiffType.ADDED));
                 y--;
