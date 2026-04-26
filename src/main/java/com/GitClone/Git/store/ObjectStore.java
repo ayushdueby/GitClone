@@ -10,12 +10,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @Component
 public class ObjectStore {
 
-    private Map<String,GitObject>ShaToGitObject; // sha->gitObject
+    private Map<String, GitObject> ShaToGitObject = new ConcurrentHashMap<>(); // sha->gitObject
     public ObjectStore()
     {
         this.ShaToGitObject=new HashMap<>();

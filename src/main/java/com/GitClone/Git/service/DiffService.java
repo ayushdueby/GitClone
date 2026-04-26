@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class DiffService {
 
-    @Autowired private final ObjectStore objectStore;
+    private final ObjectStore objectStore;
     private final GitService gitService;
     private final DiffEngine diffEngine;
 

@@ -1,5 +1,7 @@
 package com.GitClone.Git.controller;
 
+import com.GitClone.Git.ai.SemanticDiffService;
+import com.GitClone.Git.dto.SemanticDiffResult;
 import com.GitClone.Git.model.DiffLine;
 import com.GitClone.Git.service.DiffService;
 import com.GitClone.Git.service.GitService;
@@ -19,6 +21,7 @@ public class GitController {
     @Autowired public GitService gitService;
     @Autowired public DiffService diffService;
     @Autowired public MergeService mergeService;
+    @Autowired public SemanticDiffService semanticDiffService;
 
     @PostMapping("/init")
     public void gitInit()
@@ -56,12 +59,12 @@ public class GitController {
         return gitService.gitListBranch();
     }
     @GetMapping("/diff")
-    public List<DiffLine> getDiff(@RequestParam String sha1,@RequestParam String sha2,@RequestParam String fileName)
+    public List<DiffLine> getDiff(@RequestParam String sha1,@RequestParam String sha2,@RequestParam String file)
     {
-        return diffService.diffCommits(sha1,sha2,fileName);
+        return diffService.diffCommits(sha1,sha2,file);
     }
     @GetMapping("/diff/working")
-    public List<DiffLine> getDiff(@RequestParam String file,@RequestParam String newContent)
+    public List<DiffLine> getDiffHeadVsCurr(@RequestParam String file,@RequestParam String newContent)
     {
         return diffService.diffWorkingVsHead(file,newContent);
     }
@@ -74,12 +77,22 @@ public class GitController {
             return "No conflicts";
     }
 
-    @DeleteMapping("/git/branch")
+    @DeleteMapping("/branch")
     public ResponseEntity<?> deleteBranch(@RequestParam String name) {
         return ResponseEntity.ok(gitService.deleteBranch(name));
     }
-    @GetMapping("/git/log/graph")
+    @GetMapping("/log/graph")
     public ResponseEntity<?> getGraph() {
         return ResponseEntity.ok(gitService.getGraphLog());
+    }
+    @GetMapping("/ai/diff")
+    public ResponseEntity<SemanticDiffResult> getAiDiffSuggestions(
+            @RequestParam String sha1,
+            @RequestParam String sha2,
+            @RequestParam("file") String file
+    ) {
+        return ResponseEntity.ok(
+                semanticDiffService.semanticDiff(sha1, sha2, file)
+        );
     }
 }

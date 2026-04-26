@@ -97,7 +97,7 @@ public class GitService {
         return refManager.listBranches();
     }
     public String deleteBranch(String name) {
-        String currentBranch = refManager.getBranchSha(name);
+        String currentBranch = refManager.getHeadBranch(); // FIX
         String currentHeadSha = refManager.getHeadSha();
 
         refManager.deleteBranch(name, currentBranch, currentHeadSha);

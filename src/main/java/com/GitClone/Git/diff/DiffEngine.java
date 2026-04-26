@@ -17,7 +17,7 @@ public class DiffEngine {
     }
 
     /**
-     * Step 1: Build trace using Myers algorithm -- > fuck this one was too hard
+     * Step 1: Build trace using Myers algorithm -- > this one was too hard
      *
      * right (delete)
      * down (insert)

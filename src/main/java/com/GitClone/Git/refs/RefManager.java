@@ -7,6 +7,7 @@ import com.GitClone.Git.model.Tree;
 import com.GitClone.Git.store.ObjectStore;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@Component
 public class RefManager {
     private String headBranch;
     private Map<String,String>latestCommitByBranch; // branch->latest Committed sha
@@ -66,17 +68,6 @@ public class RefManager {
     {
         if(isDetached)return;
         latestCommitByBranch.put(headBranch,newSha);
-    }
-    //curr branch delete nai kar sakte
-    public void deleteBranch(String branchName)
-    {
-        if (!latestCommitByBranch.containsKey(branchName)) {
-            throw new RuntimeException("Branch does not exist");
-        }
-        if (branchName.equals(headBranch)) {
-            throw new RuntimeException("Cannot delete current branch");
-        }
-        latestCommitByBranch.remove(branchName);
     }
     public List<String>listBranches()
     {

@@ -8,12 +8,13 @@ import com.GitClone.Git.model.*;
 import com.GitClone.Git.refs.RefManager;
 import com.GitClone.Git.store.ObjectStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-
+@Service
 public class MergeService {
 
     @Autowired private GitService gitService;
