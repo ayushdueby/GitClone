@@ -98,4 +98,23 @@ public class RefManager {
     {
         return commitDAG.findLCA(sha1,sha2);
     }
+    public void deleteBranch(String name, String currentBranch, String currentHeadSha) {
+        if (!latestCommitByBranch.containsKey(name)) {
+            throw new RuntimeException("BRANCH_NOT_FOUND");
+        }
+
+        if (name.equals(currentBranch)) {
+            throw new RuntimeException("CANNOT_DELETE_CURRENT_BRANCH");
+        }
+
+        String branchSha = latestCommitByBranch.get(name);
+
+        // Check if fully merged
+        boolean isMerged = commitDAG.isAncestor(branchSha, currentHeadSha);
+        if (!isMerged) {
+            throw new RuntimeException("BRANCH_NOT_MERGED");
+        }
+
+        latestCommitByBranch.remove(name);
+    }
 }

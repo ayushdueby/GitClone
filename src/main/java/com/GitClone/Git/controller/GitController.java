@@ -5,6 +5,7 @@ import com.GitClone.Git.service.DiffService;
 import com.GitClone.Git.service.GitService;
 import com.GitClone.Git.service.MergeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.DigestException;
@@ -71,5 +72,14 @@ public class GitController {
             return mergeService.mergeConflictStore.toString();
         else
             return "No conflicts";
+    }
+
+    @DeleteMapping("/git/branch")
+    public ResponseEntity<?> deleteBranch(@RequestParam String name) {
+        return ResponseEntity.ok(gitService.deleteBranch(name));
+    }
+    @GetMapping("/git/log/graph")
+    public ResponseEntity<?> getGraph() {
+        return ResponseEntity.ok(gitService.getGraphLog());
     }
 }

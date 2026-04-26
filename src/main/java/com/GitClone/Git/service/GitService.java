@@ -1,9 +1,7 @@
 package com.GitClone.Git.service;
 
-import com.GitClone.Git.model.Blob;
-import com.GitClone.Git.model.Commit;
-import com.GitClone.Git.model.GitObject;
-import com.GitClone.Git.model.Tree;
+import com.GitClone.Git.dto.GraphResponse;
+import com.GitClone.Git.model.*;
 import com.GitClone.Git.refs.RefManager;
 import com.GitClone.Git.store.ObjectStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +10,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GitService {
@@ -100,5 +95,43 @@ public class GitService {
     public List<String>gitListBranch()
     {
         return refManager.listBranches();
+    }
+    public String deleteBranch(String name) {
+        String currentBranch = refManager.getBranchSha(name);
+        String currentHeadSha = refManager.getHeadSha();
+
+        refManager.deleteBranch(name, currentBranch, currentHeadSha);
+
+        return "Branch deleted successfully: " + name;
+    }
+    public GraphResponse getGraphLog() {
+        Set<String> visited = new HashSet<>();
+
+        // Start BFS from all branch heads
+        Map<String, String> branches = refManager.getLatestCommitByBranch();
+        Queue<String> queue = new LinkedList<>(branches.values());
+
+        List<GraphNode> nodes = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            String sha = queue.poll();
+            if (sha == null || visited.contains(sha)) continue;
+
+            visited.add(sha);
+
+            Commit commit = (Commit) objectStore.getGitObject(sha);
+
+            nodes.add(new GraphNode(
+                    sha,
+                    commit.getMessage(),
+                    commit.getAuthor(),
+                    commit.getTimestamp(),
+                    commit.getParentCommitSha()
+            ));
+
+            queue.addAll(commit.getParentCommitSha());
+        }
+
+        return new GraphResponse(nodes, branches);
     }
 }
