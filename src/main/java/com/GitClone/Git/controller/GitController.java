@@ -1,6 +1,7 @@
 package com.GitClone.Git.controller;
 
 import com.GitClone.Git.ai.SemanticDiffService;
+import com.GitClone.Git.dto.CommitRequest;
 import com.GitClone.Git.dto.SemanticDiffResult;
 import com.GitClone.Git.model.DiffLine;
 import com.GitClone.Git.service.DiffService;
@@ -45,6 +46,14 @@ public class GitController {
     @PostMapping("/merge")
     public void gitMerge(@RequestParam String branch) throws DigestException, NoSuchAlgorithmException {
         mergeService.canMerge(branch,true);
+    }
+    @PostMapping("/commit")
+    public ResponseEntity<String> gitCommit(
+            @RequestBody CommitRequest request
+    ) throws Exception {
+        return ResponseEntity.ok(
+                gitService.gitCommit(request.getMessage(), request.getAuthor())
+        );
     }
 
 

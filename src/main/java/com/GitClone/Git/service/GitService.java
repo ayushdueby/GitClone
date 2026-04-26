@@ -4,6 +4,7 @@ import com.GitClone.Git.dto.GraphResponse;
 import com.GitClone.Git.model.*;
 import com.GitClone.Git.refs.RefManager;
 import com.GitClone.Git.store.ObjectStore;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -133,5 +134,33 @@ public class GitService {
         }
 
         return new GraphResponse(nodes, branches);
+    }
+
+    public String gitCommit(String message, String author) throws DigestException, NoSuchAlgorithmException {
+
+        if (indexStaging.isEmpty()) {
+            throw new RuntimeException("NOTHING_TO_COMMIT");
+        }
+        Tree tree=new Tree();
+
+        tree.setEntries(new HashMap<>(indexStaging));
+
+        String treeSha = objectStore.store(tree);
+
+        String parentSha = refManager.getHeadSha();
+        List<String> parents = parentSha == null
+                ? new ArrayList<>()
+                : List.of(parentSha);
+
+        Commit commit = new Commit(treeSha, parents, message, author);
+        String commitSha=objectStore.store(commit);
+        //DAG update
+        refManager.addCommit(commitSha,commit.getParentCommitSha());
+        refManager.updateCurrentBranchAfterCommit(commitSha);
+
+        //clear stage
+        indexStaging.clear();
+        return commitSha;
+
     }
 }
