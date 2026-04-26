@@ -1,4 +1,4 @@
-# Git Internals Clone with AI-Powered Semantic Diff
+# Git version controle with AI-Powered Semantic Diff
 
 A production-grade version control system built from scratch in Java and Spring Boot, implementing core Git internals including a content-addressable object store, commit DAG, Myers diff algorithm, 3-way merge engine, and an AI-powered semantic diff layer that understands the intent behind code changes.
 
