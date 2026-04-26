@@ -6,6 +6,7 @@ import com.GitClone.Git.model.Commit;
 import com.GitClone.Git.model.DiffLine;
 import com.GitClone.Git.model.Tree;
 import com.GitClone.Git.store.ObjectStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -14,7 +15,7 @@ import java.util.List;
 @Component
 public class DiffService {
 
-    private final ObjectStore objectStore;
+    @Autowired private final ObjectStore objectStore;
     private final GitService gitService;
     private final DiffEngine diffEngine;
 

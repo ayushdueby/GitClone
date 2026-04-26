@@ -6,6 +6,7 @@ import com.GitClone.Git.model.GitObject;
 import com.GitClone.Git.model.Tree;
 import com.GitClone.Git.refs.RefManager;
 import com.GitClone.Git.store.ObjectStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -21,7 +22,7 @@ public class GitService {
 
     private RefManager refManager;
     private Map<String,String>indexStaging; //file_path->sha
-    private ObjectStore objectStore;
+    @Autowired private ObjectStore objectStore;
     public GitService(RefManager refManager,ObjectStore objectStore)
     {
         this.objectStore=objectStore;
@@ -48,15 +49,7 @@ public class GitService {
     }
     public List<String> gitLog()
     {
-        List<String>commitHistory=new ArrayList<>();
-        String headSha=refManager.getHeadSha();
-        while(headSha!=null)
-        {
-            Commit commit= (Commit) objectStore.getGitObject(headSha);
-            commitHistory.add(headSha);
-            headSha = commit.getParentCommitSha();
-        }
-        return commitHistory;
+        return refManager.getLog();
     }
     public void gitCheckout(String input) {
 

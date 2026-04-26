@@ -1,21 +1,21 @@
 package com.GitClone.Git.dag;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 
+@Component
 public class CommitDAG {
 
-    private Map<String,List<String>>childShaToParentSha; // childCommitSha->parentCommitSha
+    private final Map<String,List<String>>childShaToParentSha; // childCommitSha->parentCommitSha
 
     public CommitDAG()
     {
         this.childShaToParentSha=new HashMap<>();
     }
-    public void addCommit(String sha,String parentSha)
+    public void addCommit(String sha,List<String> parentSha)
     {
-        childShaToParentSha.computeIfAbsent(sha, k -> new ArrayList<>());
-        if (parentSha != null) {
-            childShaToParentSha.get(sha).add(parentSha);
-        }
+        childShaToParentSha.put(sha,new ArrayList<>(parentSha));
     }
     public List<String> getParents(String childSha)
     {

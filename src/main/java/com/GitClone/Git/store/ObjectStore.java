@@ -2,6 +2,7 @@ package com.GitClone.Git.store;
 
 import com.GitClone.Git.model.GitObject;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@Component
 public class ObjectStore {
 
     private Map<String,GitObject>ShaToGitObject; // sha->gitObject

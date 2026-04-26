@@ -1,5 +1,8 @@
 package com.GitClone.Git.model;
 
+import lombok.Data;
+
+@Data
 public class Blob extends GitObject{
 
     public byte[] content;
@@ -13,4 +16,5 @@ public class Blob extends GitObject{
     public byte[] serialize() {
         return content;
     }
+
 }

@@ -1,9 +1,11 @@
 package com.GitClone.Git.model;
 
 import com.GitClone.Git.gitEnum.MergeEnum;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class MergeChunk {
     private MergeEnum type;
     private List<String>merges;

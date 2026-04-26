@@ -1,10 +1,12 @@
 package com.GitClone.Git.refs;
 
+import com.GitClone.Git.dag.CommitDAG;
 import com.GitClone.Git.model.Commit;
 import com.GitClone.Git.model.GitObject;
 import com.GitClone.Git.model.Tree;
 import com.GitClone.Git.store.ObjectStore;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,10 +17,10 @@ import java.util.Map;
 public class RefManager {
     private String headBranch;
     private Map<String,String>latestCommitByBranch; // branch->latest Committed sha
-    private ObjectStore objectStore;
     private boolean isDetached = false;
     private String detachedHeadSha = null;
-
+    @Autowired private CommitDAG commitDAG;
+    @Autowired private ObjectStore objectStore;
     public RefManager()
     {
         this.latestCommitByBranch=new HashMap<>();
@@ -83,5 +85,17 @@ public class RefManager {
     public String getBranchSha(String branchName)
     {
         return latestCommitByBranch.getOrDefault(branchName,null);
+    }
+    public List<String> getLog()
+    {
+        return commitDAG.getHistory(latestCommitByBranch.get(headBranch));
+    }
+    public void addCommit(String commitSha,List<String>parents)
+    {
+        commitDAG.addCommit(commitSha,parents);
+    }
+    public String getBaseBranch(String sha1,String sha2)
+    {
+        return commitDAG.findLCA(sha1,sha2);
     }
 }

@@ -5,9 +5,12 @@ import com.GitClone.Git.gitEnum.MergeEnum;
 import com.GitClone.Git.model.DiffLine;
 import com.GitClone.Git.model.MergeChunk;
 import com.GitClone.Git.model.MergeResult;
+import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Component
 public class MergeEngine {
 
     private final DiffEngine diffEngine;
@@ -77,6 +80,30 @@ public class MergeEngine {
             }
         }
         return new MergeResult(hasConflicts, chunks);
+    }
+    public List<MergeChunk>getConflictMarkers(MergeResult mergeResult)
+    {
+        List<MergeChunk>mergeChunkList=new ArrayList<>();
+        for(MergeChunk mergeChunk:mergeResult.getChunks())
+        {
+            if(mergeChunk.getType()==MergeEnum.CONFLICT)
+                mergeChunkList.add(mergeChunk);
+        }
+        return mergeChunkList;
+    }
+    public String serializeConflictMarkers(List<MergeChunk>mergeChunkList)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        for(MergeChunk mergeChunk:mergeChunkList)
+        {
+            sb.append(mergeChunk.getMerges().get(0)+"\n");
+            sb.append(mergeChunk.getMerges().get(1)+"\n");
+            sb.append(mergeChunk.getMerges().get(2)+"\n");
+            sb.append(mergeChunk.getMerges().get(3)+"\n");
+            sb.append(mergeChunk.getMerges().get(4)+"\n"+"\n");
+        }
+        return sb.toString();
     }
 
 }

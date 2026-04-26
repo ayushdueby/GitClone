@@ -6,17 +6,18 @@ import java.nio.charset.StandardCharsets;
 
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Data
 public class Commit extends GitObject {
 
     private String treeSha;
-    private String parentCommitSha; // null for first commit
+    private List<String> parentCommitSha; // null for first commit
     private String message;
     private String author;
     private long timestamp;
 
-    public Commit(String treeSha, String parentCommitSha, String message, String author) {
+    public Commit(String treeSha, List<String> parentCommitSha, String message, String author) {
         this.setType("commit");
         this.treeSha = treeSha;
         this.parentCommitSha = parentCommitSha;
@@ -32,7 +33,7 @@ public class Commit extends GitObject {
         sb.append("tree ").append(treeSha).append("\n");
 
         if (parentCommitSha != null) {
-            sb.append("parent ").append(parentCommitSha).append("\n");
+            sb.append("parents ").append(parentCommitSha).append("\n");
         }
 
         sb.append("author ").append(author).append("\n");

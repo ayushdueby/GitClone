@@ -1,8 +1,11 @@
 package com.GitClone.Git.model;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class MergeResult {
     private boolean hasConflicts;
     private List<MergeChunk> chunks;
