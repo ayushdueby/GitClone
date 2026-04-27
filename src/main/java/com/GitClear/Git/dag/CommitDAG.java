@@ -46,6 +46,31 @@ public class CommitDAG {
 
         return history;
     }
+    public List<String> getHistoryTillGivenCommit(String startSha,String endSha) {
+
+        List<String> history = new ArrayList<>();
+        if(startSha==null)return history;
+
+        Set<String> visited = new HashSet<>();
+
+        Stack<String> stack = new Stack<>();
+        stack.push(startSha);
+
+        while (!stack.isEmpty()) {
+            String curr = stack.pop();
+
+            if (curr == null || visited.contains(curr) || curr.equals(endSha)) continue;
+
+            visited.add(curr);
+            history.add(curr);
+
+            for (String parent : getParents(curr)) {
+                if(parent!=null)stack.push(parent);
+            }
+        }
+
+        return history;
+    }
     public String findLCA(String sha1, String sha2) {
 
         if(sha1==null || sha2==null)return null;
