@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class BranchDivergenceAnalyzer {
+public class BranchDivergenceAnalyzerService {
     @Autowired private RefManager refManager;
     @Autowired private CommitDAG commitDAG;
     @Autowired private DiffEngine diffEngine;

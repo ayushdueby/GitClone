@@ -1,8 +1,6 @@
 package com.GitClear.Git.ai;
 
 import com.GitClear.Git.dag.CommitDAG;
-import com.GitClear.Git.diff.DiffEngine;
-import com.GitClear.Git.dto.CommitIntentResult;
 import com.GitClear.Git.dto.TrajectoryResponse;
 import com.GitClear.Git.helper.SerializeDiffs;
 import com.GitClear.Git.model.*;
@@ -14,11 +12,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class ConflictProphetService {
-    @Autowired private BranchDivergenceAnalyzer branchDivergenceAnalyzer;
+    @Autowired private BranchDivergenceAnalyzerService branchDivergenceAnalyzerService;
     @Autowired private AiService aiService;
     @Autowired private com.fasterxml.jackson.databind.ObjectMapper objectMapper;
     @Autowired private DiffService diffService;
@@ -28,7 +25,7 @@ public class ConflictProphetService {
 
     public ProphecyReport prophesy(String branch1, String branch2) {
 
-        DivergenceReport report = branchDivergenceAnalyzer.analyzeDivergence(branch1, branch2);
+        DivergenceReport report = branchDivergenceAnalyzerService.analyzeDivergence(branch1, branch2);
 
         List<FileCollisionRisk> risks = new ArrayList<>(report.getFileRisks().values());
 

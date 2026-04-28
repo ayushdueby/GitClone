@@ -1,13 +1,11 @@
 package com.GitClear.Git.controller;
 
+import com.GitClear.Git.ai.CodebaseMemoryService;
 import com.GitClear.Git.ai.ConflictProphetService;
 import com.GitClear.Git.ai.IntentPredictorService;
 import com.GitClear.Git.ai.SemanticDiffService;
 import com.GitClear.Git.dag.CommitDAG;
-import com.GitClear.Git.dto.CommitIntentResult;
-import com.GitClear.Git.dto.CommitRequest;
-import com.GitClear.Git.dto.SemanticDiffResult;
-import com.GitClear.Git.dto.TrajectoryResponse;
+import com.GitClear.Git.dto.*;
 import com.GitClear.Git.model.DiffLine;
 import com.GitClear.Git.model.ProphecyReport;
 import com.GitClear.Git.service.DiffService;
@@ -33,6 +31,7 @@ public class GitController {
     @Autowired public IntentPredictorService intentPredictorService;
     @Autowired public CommitDAG commitDAG;
     @Autowired public ConflictProphetService conflictProphetService;
+    @Autowired public CodebaseMemoryService codebaseMemoryService;
 
     @PostMapping("/init")
     public void gitInit()
@@ -158,6 +157,15 @@ public class GitController {
             @RequestParam String branch2
     ) {
         return conflictProphetService.prophesy(branch1,branch2).getOverallConflictProbability();
+    }
+    @PostMapping("/ai/query")
+    public ResponseEntity<QueryResult> query(
+            @RequestParam String branch,
+            @RequestBody String question
+    ) {
+        return ResponseEntity.ok(
+                codebaseMemoryService.query(question, branch)
+        );
     }
 
 
