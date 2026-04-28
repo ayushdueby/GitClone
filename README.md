@@ -1,4 +1,4 @@
-# Javas Git — AI-Powered Git Engine Built From Scratch
+# Fissure Git: AI-Powered Git Engine Built From Scratch
 
 A production-grade version control system implemented entirely from first principles in Java and Spring Boot. This is not a wrapper around Git. Not a library. Not a tutorial project. Every component — the object store, commit graph, diff algorithm, merge engine, and AI semantic layer — is built from scratch.
 
