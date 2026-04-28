@@ -4,6 +4,7 @@ import com.GitClear.Git.dag.CommitDAG;
 import com.GitClear.Git.dto.CommitIntentResult;
 import com.GitClear.Git.dto.IntentResult;
 import com.GitClear.Git.dto.QueryResult;
+import com.GitClear.Git.gitEnum.DiffType;
 import com.GitClear.Git.model.Commit;
 import com.GitClear.Git.model.DiffLine;
 import com.GitClear.Git.model.Tree;
@@ -167,7 +168,11 @@ public class CodebaseMemoryService {
 
             for (String parent : parents) {
                 List<DiffLine> diffs = diffService.diffCommits(parent, sha, intent.getTargetFile());
-                diffs.forEach(d -> diffData.append(d.getDiffContent()).append("\n"));
+                for(DiffLine diff:diffs)
+                {
+                    if(diff.getType()!= DiffType.UNCHANGED)
+                        diffData.append(diff.getDiffContent()).append("\n");
+                }
             }
 
             commitsUsed.add(sha);
